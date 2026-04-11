@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Preglejte ponudbo SweetCraft tort, kolačkov in sezonskih sladic."
+    />
+    <title>SweetCraft | Ponudba</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="d-flex flex-column min-vh-100" data-page="ponudba">
+    <div data-site-header></div>
+
+    <main class="page-main flex-grow-1">
+      <section class="page-hero">
+        <div class="container">
+          <header class="center-copy text-center">
+            <h1>Naša ponudba</h1>
+            <p class="lead mb-0">Izberite med široko paleto ročno izdelanih sladic.</p>
+          </header>
+        </div>
+      </section>
+
+      <section class="page-section">
+        <div class="container">
+          <div
+            class="d-flex flex-wrap justify-content-center gap-2 mb-5"
+            role="group"
+            aria-label="Filtriranje izdelkov"
+          >
+            <button
+              class="btn filter-btn rounded-pill is-active"
+              type="button"
+              data-filter="vse"
+              aria-pressed="true"
+            >
+              Vse
+            </button>
+            <button
+              class="btn filter-btn rounded-pill"
+              type="button"
+              data-filter="torte"
+              aria-pressed="false"
+            >
+              Torte
+            </button>
+            <button
+              class="btn filter-btn rounded-pill"
+              type="button"
+              data-filter="kolacki"
+              aria-pressed="false"
+            >
+              Kolački
+            </button>
+            <button
+              class="btn filter-btn rounded-pill"
+              type="button"
+              data-filter="sezonsko"
+              aria-pressed="false"
+            >
+              Sezonsko
+            </button>
+          </div>
+
+          <div
+            class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-3"
+            data-product-grid
+          ></div>
+          <p class="empty-note mb-0" data-empty-state hidden>
+            Ni izdelkov v tej kategoriji.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <div data-site-footer></div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/site.js"></script>
+  </body>
+</html>
