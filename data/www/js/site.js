@@ -129,7 +129,12 @@ function renderFooter() {
 function createCategoryCard(category) {
   return `
     <div class="col">
-      <a class="card-link d-block h-100" href="ponudba.html">
+      <a
+        class="card-link d-block h-100"
+        href="ponudba.html?filter=${category.id}#${category.id}"
+        data-category-link
+        data-category-id="${category.id}"
+      >
         <article class="card category-card h-100 border-0 overflow-hidden">
           <div class="card-media category-card-media">
             <img src="${category.image}" alt="${category.title}">
@@ -173,6 +178,15 @@ function renderDomovCollections() {
 
   if (categoriesMount) {
     categoriesMount.innerHTML = productCategories.map(createCategoryCard).join("");
+
+    categoriesMount.querySelectorAll("[data-category-link]").forEach((link) => {
+      link.addEventListener("click", () => {
+        const selectedCategory = link.dataset.categoryId;
+        if (selectedCategory) {
+          window.sessionStorage.setItem("sweetcraft-offer-filter", selectedCategory);
+        }
+      });
+    });
   }
 
   if (featuredMount) {
@@ -205,13 +219,34 @@ function renderPonudbaPage() {
       button.classList.toggle("is-active", isActive);
       button.setAttribute("aria-pressed", String(isActive));
     });
+
+    const nextUrl =
+      filter === "vse"
+        ? "ponudba.html"
+        : `ponudba.html?filter=${encodeURIComponent(filter)}`;
+    window.history.replaceState({}, "", nextUrl);
   };
 
   buttons.forEach((button) => {
-    button.addEventListener("click", () => render(button.dataset.filter));
+    button.addEventListener("click", () => {
+      const nextFilter = button.dataset.filter;
+      window.sessionStorage.setItem("sweetcraft-offer-filter", nextFilter);
+      render(nextFilter);
+    });
   });
 
-  render("vse");
+  const params = new URLSearchParams(window.location.search);
+  const requestedFilter = params.get("filter");
+  const hashFilter = window.location.hash.replace(/^#/, "");
+  const storedFilter = window.sessionStorage.getItem("sweetcraft-offer-filter");
+  const initialFilterCandidate = requestedFilter || hashFilter || storedFilter || "vse";
+  const initialFilter = buttons.some((button) => button.dataset.filter === initialFilterCandidate)
+    ? initialFilterCandidate
+    : "vse";
+
+  window.sessionStorage.removeItem("sweetcraft-offer-filter");
+
+  render(initialFilter);
 }
 
 function renderProductDetailPage() {
