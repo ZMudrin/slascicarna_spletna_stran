@@ -5,7 +5,6 @@ export const siteConfig = {
   country: "Slovenija",
   phone: "031 234 567",
   email: "info@sweetcraft.si",
-  addressLines: ["Gosposka ulica 12", "2000 Maribor", "Slovenija"],
 };
 
 export const navItems = [

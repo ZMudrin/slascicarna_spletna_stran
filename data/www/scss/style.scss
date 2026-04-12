@@ -30,7 +30,6 @@ $navbar-light-toggler-border-color: transparent;
 :root {
   --sc-surface: #fffdfb;
   --sc-surface-soft: #f7eee8;
-  --sc-surface-accent: #f1e1d7;
   --sc-ink: #2b2320;
   --sc-ink-soft: #5c4f49;
   --sc-muted: rgba(43, 35, 32, 0.74);
@@ -91,10 +90,6 @@ body[data-page="domov"] .center-copy.text-center {
 img {
   display: block;
   width: 100%;
-}
-
-.page-main {
-  display: block;
 }
 
 .hero-section,
@@ -159,8 +154,7 @@ h4,
   margin-inline: auto;
 }
 
-.hero-badge,
-.section-kicker {
+.hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -272,8 +266,7 @@ h4,
   aspect-ratio: 4 / 3;
 }
 
-.detail-media,
-.square-media {
+.detail-media {
   aspect-ratio: 1 / 1;
 }
 
