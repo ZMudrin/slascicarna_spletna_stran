@@ -31,7 +31,7 @@ $navbar-light-toggler-border-color: transparent;
   --sc-surface: #ffffff;
   --sc-surface-soft: #f8efe9;
   --sc-surface-accent: #f2e4dc;
-  --sc-muted: rgba(46, 46, 46, 0.72);
+  --sc-muted: rgba(20, 20, 20, 0.72);
   --sc-primary: #{$primary};
   --sc-primary-dark: #c96a56;
   --sc-accent: #{$secondary};
@@ -53,7 +53,11 @@ html {
 body {
   min-width: 320px;
   background:
-    radial-gradient(circle at top left, rgba(244, 233, 226, 0.85), transparent 28%),
+    radial-gradient(
+      circle at top left,
+      rgba(244, 233, 226, 0.85),
+      transparent 28%
+    ),
     linear-gradient(180deg, #fffdfb 0%, $light 100%);
   line-height: 1.6;
 }
@@ -190,7 +194,6 @@ img {
 
 .brand-copy small {
   color: var(--sc-accent);
-  text-transform: lowercase;
   letter-spacing: 0.08em;
 }
 
@@ -339,7 +342,9 @@ img {
 
 .product-card,
 .category-card {
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .product-card-media,
@@ -456,7 +461,11 @@ img {
 
 .info-card {
   padding: 1.5rem;
-  background: linear-gradient(180deg, rgba(244, 233, 226, 0.82), rgba(255, 255, 255, 0.96));
+  background: linear-gradient(
+    180deg,
+    rgba(244, 233, 226, 0.82),
+    rgba(255, 255, 255, 0.96)
+  );
 }
 
 .info-list dt {
@@ -505,7 +514,11 @@ img {
   place-items: center;
   min-height: 280px;
   padding: 1.5rem;
-  background: linear-gradient(135deg, rgba(244, 233, 226, 0.9), rgba(122, 158, 159, 0.18));
+  background: linear-gradient(
+    135deg,
+    rgba(244, 233, 226, 0.9),
+    rgba(122, 158, 159, 0.18)
+  );
   text-align: center;
 }
 
@@ -548,7 +561,11 @@ img {
 
 .form-card {
   padding: 1.45rem 1.8rem 1.8rem;
-  background: linear-gradient(180deg, rgba(248, 239, 233, 0.96), rgba(255, 248, 244, 0.92));
+  background: linear-gradient(
+    180deg,
+    rgba(248, 239, 233, 0.96),
+    rgba(255, 248, 244, 0.92)
+  );
 }
 
 .form-card legend {

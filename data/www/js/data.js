@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "SweetCraft",
-  tagline: "ročno izdelane sladice",
+  tagline: "Ročno izdelane sladice",
   city: "Maribor",
   country: "Slovenija",
   phone: "031 234 567",
