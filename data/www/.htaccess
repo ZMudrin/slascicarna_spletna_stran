@@ -1,0 +1,14 @@
+DirectoryIndex index.php index.html
+
+RewriteEngine On
+
+# Redirect legacy .html routes to their PHP versions when available.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+RewriteRule ^(.+)\.html$ $1.php [R=302,L]
+
+# Allow clean PHP route handling without exposing the extension.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L]

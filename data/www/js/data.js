@@ -8,11 +8,11 @@ export const siteConfig = {
 };
 
 export const navItems = [
-  { id: "domov", label: "Domov", href: "domov.html" },
-  { id: "ponudba", label: "Ponudba", href: "ponudba.html" },
-  { id: "o-nas", label: "O nas", href: "o-nas.html" },
-  { id: "kontakt", label: "Kontakt", href: "kontakt.html" },
-  { id: "narocilo", label: "Naročilo", href: "narocilo.html" },
+  { id: "domov", label: "Domov", href: "domov.php" },
+  { id: "ponudba", label: "Ponudba", href: "ponudba.php" },
+  { id: "o-nas", label: "O nas", href: "o-nas.php" },
+  { id: "kontakt", label: "Kontakt", href: "kontakt.php" },
+  { id: "narocilo", label: "Naročilo", href: "narocilo.php" },
 ];
 
 export const products = [

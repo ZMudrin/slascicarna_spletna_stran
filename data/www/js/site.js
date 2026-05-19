@@ -34,7 +34,7 @@ function renderHeader() {
     <header class="site-header">
       <nav class="navbar navbar-expand-md" aria-label="Glavna navigacija">
         <div class="container">
-          <a class="navbar-brand brand" href="domov.html" aria-label="SweetCraft domov">
+          <a class="navbar-brand brand" href="domov.php" aria-label="SweetCraft domov">
             <span class="brand-mark">
               <img class="brand-mark-img" src="slike/ikona-logo.png" alt="" aria-hidden="true">
             </span>
@@ -131,7 +131,7 @@ function createCategoryCard(category) {
     <div class="col">
       <a
         class="card-link d-block h-100"
-        href="ponudba.html?filter=${category.id}#${category.id}"
+        href="ponudba.php?filter=${category.id}#${category.id}"
         data-category-link
         data-category-id="${category.id}"
       >
@@ -152,7 +152,7 @@ function createCategoryCard(category) {
 function createProductCard(product, showCategory = false) {
   return `
     <div class="col">
-      <a class="card-link d-block h-100" href="izdelek.html?id=${product.id}">
+      <a class="card-link d-block h-100" href="izdelek.php?id=${product.id}">
         <article class="card product-card h-100 border-0 overflow-hidden">
           <div class="card-media product-card-media">
             <img src="${product.image}" alt="${product.name}">
@@ -222,8 +222,8 @@ function renderPonudbaPage() {
 
     const nextUrl =
       filter === "vse"
-        ? "ponudba.html"
-        : `ponudba.html?filter=${encodeURIComponent(filter)}`;
+        ? "ponudba.php"
+        : `ponudba.php?filter=${encodeURIComponent(filter)}`;
     window.history.replaceState({}, "", nextUrl);
   };
 
@@ -268,7 +268,7 @@ function renderProductDetailPage() {
               <div class="empty-panel">
                 <h1>Izdelek ni bil najden</h1>
                 <p>Izbrani izdelek ne obstaja več ali pa je povezava napačna.</p>
-                <a class="btn btn-primary" href="ponudba.html">Nazaj na ponudbo</a>
+                <a class="btn btn-primary" href="ponudba.php">Nazaj na ponudbo</a>
               </div>
             </div>
           </div>
@@ -283,8 +283,8 @@ function renderProductDetailPage() {
       <div class="container">
         <nav aria-label="Drobtinice">
           <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="domov.html">Domov</a></li>
-            <li class="breadcrumb-item"><a href="ponudba.html">Ponudba</a></li>
+            <li class="breadcrumb-item"><a href="domov.php">Domov</a></li>
+            <li class="breadcrumb-item"><a href="ponudba.php">Ponudba</a></li>
             <li class="breadcrumb-item active" aria-current="page">${product.name}</li>
           </ol>
         </nav>
@@ -323,7 +323,7 @@ function renderProductDetailPage() {
                 </dl>
               </section>
 
-              <a class="btn btn-primary w-100 mb-3" href="narocilo.html?product=${product.id}">Naroči ta izdelek</a>
+              <a class="btn btn-primary w-100 mb-3" href="narocilo.php?product=${product.id}">Naroči ta izdelek</a>
 
               <aside class="notice">
                 <p class="mb-0"><strong>Pomembno:</strong> Vse sladice so narejene po naročilu iz svežih sestavin. Prosimo, naročite vsaj <strong>3 dni vnaprej</strong> za najboljšo kakovost.</p>
@@ -360,12 +360,6 @@ function setupNarociloForm() {
   if (document.body.dataset.page !== "narocilo") return;
 
   const form = document.querySelector("[data-order-form]");
-  const success = document.querySelector("[data-order-success]");
-  const phoneTarget = document.querySelector("[data-order-phone]");
-  const emailTarget = document.querySelector("[data-order-email]");
-  const phoneLink = document.querySelector("[data-order-phone-link]");
-  const emailLink = document.querySelector("[data-order-email-link]");
-  const resetButton = document.querySelector("[data-order-reset]");
   const modeField = form?.querySelector("[data-order-mode]");
   const productField = form?.querySelector("[data-order-product]");
   const sizeField = form?.querySelector("[data-order-size]");
@@ -379,12 +373,6 @@ function setupNarociloForm() {
 
   if (
     !form ||
-    !success ||
-    !phoneTarget ||
-    !emailTarget ||
-    !phoneLink ||
-    !emailLink ||
-    !resetButton ||
     !modeField ||
     !productField ||
     !sizeField ||
@@ -420,6 +408,10 @@ function setupNarociloForm() {
 
   const params = new URLSearchParams(window.location.search);
   const requestedProduct = products.find((product) => product.id === params.get("product"));
+  const initialModeValue = form.dataset.initialMode;
+  const initialProductValue = form.dataset.initialProduct;
+  const initialSizeValue = form.dataset.initialSize;
+  const initialFlavorValue = form.dataset.initialFlavor;
   const defaultMode = requestedProduct
     ? requestedProduct.category === "torte"
       ? "torta"
@@ -477,25 +469,32 @@ function setupNarociloForm() {
     return filteredProducts;
   };
 
-  const populateSizeOptions = (mode, filteredProducts, selectedProduct) => {
+  const populateSizeOptions = (mode, filteredProducts, selectedProduct, preferredSize = "") => {
     const sizeOptions = getSizeOptions(mode, filteredProducts, selectedProduct);
     sizeField.innerHTML = sizeOptions
       .map((option) => `<option value="${option}">${option}</option>`)
       .join("");
 
-    if (selectedProduct?.velikost) {
+    if (preferredSize && sizeOptions.includes(preferredSize)) {
+      sizeField.value = preferredSize;
+    } else if (selectedProduct?.velikost) {
       sizeField.value = selectedProduct.velikost;
     }
   };
 
-  const syncOrderState = ({ preferredProductId = null, preserveFlavor = true } = {}) => {
+  const syncOrderState = ({
+    preferredProductId = null,
+    preferredSize = "",
+    preferredFlavor = "",
+    preserveFlavor = true,
+  } = {}) => {
     const mode = modeField.value;
     const filteredProducts = populateProductOptions(mode, preferredProductId);
     const selectedProduct =
       filteredProducts.find((product) => product.id === productField.value) || null;
 
     helperField.textContent = orderModeConfig[mode].helper;
-    populateSizeOptions(mode, filteredProducts, selectedProduct);
+    populateSizeOptions(mode, filteredProducts, selectedProduct, preferredSize);
 
     if (selectedProduct) {
       selectionCard.hidden = false;
@@ -504,7 +503,10 @@ function setupNarociloForm() {
       selectionSize.textContent = selectedProduct.velikost;
       selectionOccasion.textContent = selectedProduct.priloznost;
 
-      if (!preserveFlavor || !flavorField.value || flavorField.value === lastAutoFlavor) {
+      if (preferredFlavor) {
+        flavorField.value = preferredFlavor;
+        lastAutoFlavor = preferredFlavor;
+      } else if (!preserveFlavor || !flavorField.value || flavorField.value === lastAutoFlavor) {
         flavorField.value = selectedProduct.okus;
         lastAutoFlavor = selectedProduct.okus;
       }
@@ -525,9 +527,11 @@ function setupNarociloForm() {
     pickupDateField.min = minDate;
   }
 
-  modeField.value = defaultMode;
+  modeField.value = initialModeValue || defaultMode;
   syncOrderState({
-    preferredProductId: requestedProduct?.id || null,
+    preferredProductId: initialProductValue || requestedProduct?.id || null,
+    preferredSize: initialSizeValue || "",
+    preferredFlavor: initialFlavorValue || "",
     preserveFlavor: false,
   });
 
@@ -537,30 +541,6 @@ function setupNarociloForm() {
 
   productField.addEventListener("change", () => {
     syncOrderState({ preferredProductId: productField.value, preserveFlavor: false });
-  });
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const formData = new FormData(form);
-    const phone = formData.get("telefon") || siteConfig.phone;
-    const email = formData.get("email") || siteConfig.email;
-    phoneTarget.textContent = phone;
-    emailTarget.textContent = email;
-    phoneLink.href = `tel:${String(phone).replace(/\s+/g, "")}`;
-    emailLink.href = `mailto:${email}`;
-    form.hidden = true;
-    success.hidden = false;
-  });
-
-  resetButton.addEventListener("click", () => {
-    form.reset();
-    modeField.value = defaultMode;
-    syncOrderState({
-      preferredProductId: requestedProduct?.id || null,
-      preserveFlavor: false,
-    });
-    form.hidden = false;
-    success.hidden = true;
   });
 }
 

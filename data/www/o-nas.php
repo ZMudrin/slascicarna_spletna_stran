@@ -1,0 +1,134 @@
+<?php
+
+declare(strict_types=1);
+
+$pageId = 'o-nas';
+$pageTitle = 'SweetCraft | O nas';
+$pageDescription = 'Spoznajte zgodbo SweetCraft, naše vrednote in galerijo ročno izdelanih sladic.';
+require __DIR__ . '/includes/head.php';
+?>
+<main class="page-main flex-grow-1">
+  <section class="page-hero">
+    <div class="container">
+      <header class="center-copy text-center">
+        <h1>O nas</h1>
+        <p class="lead mb-0">
+          Spoznajte zgodbo SweetCraft in ljudi, ki ustvarjajo sladice z dušo.
+        </p>
+      </header>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <div class="row g-4 g-xl-5 align-items-center">
+        <div class="col-lg-6">
+          <figure class="rounded-media about-story-media mb-0">
+            <img src="slike/weird-chroashon.jpg" alt="Naša kuhinja" />
+          </figure>
+        </div>
+
+        <article class="col-lg-6 story-copy">
+          <h2>Naša zgodba</h2>
+          <p>
+            SweetCraft je nastal iz ljubezni do sladkarstva in želje, da
+            ustvarimo nekaj posebnega. Začeli smo kot majhna družinska
+            slaščičarna v srcu Maribora s ciljem prinesti pristno kakovost in
+            ročno izdelane sladice nazaj na naše mize.
+          </p>
+          <p>
+            Vsaka naša torta je ustvarjena po tradicionalnih receptih,
+            obogatenih s sodobnimi tehnikami in kreativnostjo. Verjamemo, da
+            so najboljše sladice tiste, ki so narejene z ljubeznijo,
+            potrpežljivostjo in pozornostjo do detajlov.
+          </p>
+          <p class="mb-0">
+            Naše sestavine izbiramo z največjo skrbnostjo, od lokalnih
+            pridelovalcev do certificiranih dobaviteljev. Kakovost je ključ do
+            popolnega okusa.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section section-soft">
+    <div class="container">
+      <header class="center-copy text-center mb-5">
+        <h2 class="section-title mb-3">Naše vrednote</h2>
+      </header>
+
+      <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
+        <div class="col">
+          <article class="card value-card h-100 border-0">
+            <div class="card-body p-4 p-xl-5">
+              <div class="value-icon">🎂</div>
+              <h3 class="h4">Kakovost</h3>
+              <p class="mb-0">
+                Uporabljamo samo najboljše sestavine in preizkušene recepte za
+                popoln okus.
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <div class="col">
+          <article class="card value-card h-100 border-0">
+            <div class="card-body p-4 p-xl-5">
+              <div class="value-icon is-accent">💝</div>
+              <h3 class="h4">Ljubezen</h3>
+              <p class="mb-0">
+                Vsaka sladica je ustvarjena z ljubeznijo in posvečenostjo
+                detajlom.
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <div class="col">
+          <article class="card value-card h-100 border-0">
+            <div class="card-body p-4 p-xl-5">
+              <div class="value-icon">✨</div>
+              <h3 class="h4">Unikatnost</h3>
+              <p class="mb-0">
+                Vsaka torta je edinstvena, prilagojena vašim željam in potrebam.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <header class="center-copy text-center mb-5">
+        <h2 class="section-title mb-3">Naše delo</h2>
+      </header>
+
+      <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-4">
+        <div class="col">
+          <figure class="gallery-card mb-0">
+            <img src="slike/late-night-bakery.jpg" alt="Naše sladice" />
+          </figure>
+        </div>
+        <div class="col">
+          <figure class="gallery-card mb-0">
+            <img src="slike/muffins.jpg" alt="Cupcakes" />
+          </figure>
+        </div>
+        <div class="col">
+          <figure class="gallery-card mb-0">
+            <img src="slike/seasonal-sweet.jpg" alt="Artisan desserts" />
+          </figure>
+        </div>
+        <div class="col">
+          <figure class="gallery-card mb-0">
+            <img src="slike/basic-chorasuhyonts.jpg" alt="Fresh pastries" />
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<?php require __DIR__ . '/includes/footer.php'; ?>
