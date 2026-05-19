@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "build": "sass data/www/scss:data/www/css --no-source-map",
-        "dev": "sass --watch data/www/scss:data/www/css --no-source-map"
+        "build": "sass scss:css --no-source-map",
+        "dev": "sass --watch scss:css --no-source-map"
     },
     "dependencies": {
         "bootstrap": "^5.3.0"

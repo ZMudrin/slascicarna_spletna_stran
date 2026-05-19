@@ -35,16 +35,18 @@ services:
   node:
     image: node:18
     container_name: node_sass
-    working_dir: /workspace
+    working_dir: /var/www/html
     restart: unless-stopped
     volumes:
-      - .:/workspace
+      - ./data/www:/var/www/html
+      - ./data/www:/workspace
+      - node_modules:/var/www/html/node_modules
       - node_modules:/workspace/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
       - CHOKIDAR_INTERVAL=100
-      - SHELL=/bin/sh 
-    command: sh -c "npm install && npm run dev"
+      - SHELL=/bin/sh
+    command: sh -c "cd /var/www/html && if [ -f package-lock.json ]; then npm ci; else npm install; fi && npm run dev"
 
 volumes:
   node_modules:

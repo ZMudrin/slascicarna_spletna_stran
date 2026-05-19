@@ -25,7 +25,7 @@ $input-focus-box-shadow: 0 0 0 0.25rem rgba(217, 123, 102, 0.15);
 $card-border-radius: 1.75rem;
 $navbar-light-toggler-border-color: transparent;
 
-@import "../../../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap/scss/bootstrap";
 
 :root {
   --sc-surface: #fffdfb;
