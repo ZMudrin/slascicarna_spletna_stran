@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/database.php';
+require_once __DIR__ . '/includes/catalog.php';
 require_once __DIR__ . '/includes/order-handler.php';
 
 $pageId = 'narocilo';
@@ -12,6 +13,21 @@ $pageDescription = 'Oddajte naročilo za torto, kolačke ali sezonske sladice Sw
 $databaseStatusMessage = '';
 $pdo = connect_database($databaseStatusMessage);
 $orderState = process_order_request($pdo, $databaseStatusMessage);
+$products = fetch_products($pdo);
+
+$requestedProductId = isset($_GET['product']) ? (int) $_GET['product'] : 0;
+$initialSelectedProduct = (int) ($orderState['data']['izdelek'] !== '' ? $orderState['data']['izdelek'] : $requestedProductId);
+
+$fallbackSizeOptions = [];
+foreach ($products as $product) {
+    $fallbackSizeOptions[] = $product['size'];
+}
+$fallbackSizeOptions = array_values(array_unique($fallbackSizeOptions));
+
+$orderProductsJson = json_encode(
+    $products,
+    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+);
 
 require __DIR__ . '/includes/head.php';
 ?>
@@ -76,7 +92,7 @@ require __DIR__ . '/includes/head.php';
             method="post"
             data-order-form
             data-initial-mode="<?= h($orderState['data']['tipNarocila']) ?>"
-            data-initial-product="<?= h($orderState['data']['izdelek']) ?>"
+            data-initial-product="<?= h((string) $initialSelectedProduct) ?>"
             data-initial-size="<?= h($orderState['data']['velikost']) ?>"
             data-initial-flavor="<?= h($orderState['data']['okus']) ?>"
             <?= $orderState['success'] ? 'hidden' : '' ?>
@@ -96,7 +112,16 @@ require __DIR__ . '/includes/head.php';
 
               <div class="mb-3">
                 <label class="form-label" for="izdelek">Izbran izdelek ali referenca *</label>
-                <select class="form-select" id="izdelek" name="izdelek" data-order-product required></select>
+                <select class="form-select" id="izdelek" name="izdelek" data-order-product required>
+                  <?php foreach ($products as $product): ?>
+                    <option
+                      value="<?= h((string) $product['id']) ?>"
+                      <?= $initialSelectedProduct === (int) $product['id'] ? ' selected' : '' ?>
+                    >
+                      <?= h($product['name']) ?> (<?= h($product['categoryLabel']) ?>)
+                    </option>
+                  <?php endforeach; ?>
+                </select>
                 <p class="order-field-note mb-0 mt-2" data-order-helper>
                   Izberite izdelek iz ponudbe, ki je najbližje vaši želji.
                 </p>
@@ -138,7 +163,13 @@ require __DIR__ . '/includes/head.php';
 
                 <div class="col-md-6">
                   <label class="form-label" for="velikost">Velikost ali količina *</label>
-                  <select class="form-select" id="velikost" name="velikost" data-order-size required></select>
+                  <select class="form-select" id="velikost" name="velikost" data-order-size required>
+                    <?php foreach ($fallbackSizeOptions as $sizeOption): ?>
+                      <option value="<?= h($sizeOption) ?>"<?= $orderState['data']['velikost'] === $sizeOption ? ' selected' : '' ?>>
+                        <?= h($sizeOption) ?>
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
                 </div>
               </div>
 
@@ -250,6 +281,8 @@ require __DIR__ . '/includes/head.php';
               </p>
             </aside>
           </form>
+
+          <script id="order-products-data" type="application/json"><?= $orderProductsJson ?: '[]' ?></script>
         </div>
       </div>
     </div>

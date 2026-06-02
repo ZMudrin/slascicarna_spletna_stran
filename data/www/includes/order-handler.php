@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/catalog.php';
+
 function default_order_form_data(): array
 {
     return [
@@ -65,6 +67,13 @@ function process_order_request(?PDO $pdo, string $statusMessage): array
         $result['errors'][] = 'E-poštni naslov ni v pravilni obliki.';
     }
 
+    $pickupTimestamp = strtotime($result['data']['datumPrevzema']);
+    $minimumTimestamp = (new DateTimeImmutable('today'))->modify('+3 days')->getTimestamp();
+
+    if ($result['data']['datumPrevzema'] !== '' && ($pickupTimestamp === false || $pickupTimestamp < $minimumTimestamp)) {
+        $result['errors'][] = 'Datum prevzema mora biti vsaj 3 dni vnaprej.';
+    }
+
     if ($pdo === null) {
         $result['errors'][] = 'Shranjevanje trenutno ni mogoče, ker povezava z bazo ni na voljo.';
 
@@ -72,6 +81,13 @@ function process_order_request(?PDO $pdo, string $statusMessage): array
     }
 
     if ($result['errors'] !== []) {
+        return $result;
+    }
+
+    $productId = (int) $result['data']['izdelek'];
+    if (!product_exists($pdo, $productId)) {
+        $result['errors'][] = 'Izbran izdelek ne obstaja več. Prosimo, izberite drugega.';
+
         return $result;
     }
 
@@ -87,7 +103,8 @@ function process_order_request(?PDO $pdo, string $statusMessage): array
             special_notes,
             customer_name,
             customer_phone,
-            customer_email
+            customer_email,
+            status
         ) VALUES (
             :product_id,
             :order_mode,
@@ -99,12 +116,13 @@ function process_order_request(?PDO $pdo, string $statusMessage): array
             :special_notes,
             :customer_name,
             :customer_phone,
-            :customer_email
+            :customer_email,
+            :status
         )'
     );
 
     $statement->execute([
-        'product_id' => (int) $result['data']['izdelek'],
+        'product_id' => $productId,
         'order_mode' => $result['data']['tipNarocila'],
         'occasion' => $result['data']['priloznostNarocila'],
         'size_option' => $result['data']['velikost'],
@@ -115,6 +133,7 @@ function process_order_request(?PDO $pdo, string $statusMessage): array
         'customer_name' => $result['data']['ime'],
         'customer_phone' => $result['data']['telefon'],
         'customer_email' => $result['data']['email'],
+        'status' => 'novo',
     ]);
 
     $query = http_build_query([

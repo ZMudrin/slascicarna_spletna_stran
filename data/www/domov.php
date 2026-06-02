@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/includes/database.php';
+require_once __DIR__ . '/includes/catalog.php';
+
+$databaseStatusMessage = '';
+$pdo = connect_database($databaseStatusMessage);
+$categoryCards = fetch_category_cards($pdo);
+$featuredProducts = fetch_featured_products($pdo);
+
 $pageId = 'domov';
 $pageTitle = 'SweetCraft | Domov';
 $pageDescription = 'SweetCraft je butična slaščičarna za ročno izdelane torte, kolačke in sladice po meri.';
@@ -31,6 +39,16 @@ require __DIR__ . '/includes/head.php';
       </div>
     </div>
   </section>
+
+  <?php if ($pdo === null): ?>
+    <section class="page-section pt-0">
+      <div class="container">
+        <div class="alert alert-warning mb-0" role="status">
+          <?= h($databaseStatusMessage) ?>
+        </div>
+      </div>
+    </section>
+  <?php endif; ?>
 
   <section class="page-section pt-0">
     <div class="container">
@@ -96,10 +114,26 @@ require __DIR__ . '/includes/head.php';
       <header class="center-copy text-center mb-4">
         <h2 class="section-title mb-3">Naša ponudba</h2>
       </header>
-      <div
-        class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-3"
-        data-home-categories
-      ></div>
+      <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
+        <?php foreach ($categoryCards as $category): ?>
+          <div class="col">
+            <a
+              class="card-link d-block h-100"
+              href="ponudba.php?filter=<?= h($category['id']) ?>"
+            >
+              <article class="card category-card h-100 border-0 overflow-hidden">
+                <div class="card-media category-card-media">
+                  <img src="<?= h($category['image']) ?>" alt="<?= h($category['title']) ?>" />
+                </div>
+                <div class="card-body p-4">
+                  <h3 class="h4"><?= h($category['title']) ?></h3>
+                  <p class="mb-0"><?= h($category['description']) ?></p>
+                </div>
+              </article>
+            </a>
+          </div>
+        <?php endforeach; ?>
+      </div>
     </div>
   </section>
 
@@ -108,10 +142,24 @@ require __DIR__ . '/includes/head.php';
       <header class="center-copy text-center mb-4">
         <h2 class="section-title mb-3">Izpostavljeni izdelki</h2>
       </header>
-      <div
-        class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-4"
-        data-home-featured
-      ></div>
+      <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-4">
+        <?php foreach ($featuredProducts as $product): ?>
+          <div class="col">
+            <a class="card-link d-block h-100" href="izdelek.php?id=<?= h($product['id']) ?>">
+              <article class="card product-card h-100 border-0 overflow-hidden">
+                <div class="card-media product-card-media">
+                  <img src="<?= h($product['image']) ?>" alt="<?= h($product['name']) ?>" />
+                </div>
+                <div class="card-body p-4">
+                  <p class="eyebrow"><?= h($product['categoryLabel']) ?></p>
+                  <h3 class="h4"><?= h($product['name']) ?></h3>
+                  <p class="mb-0"><?= h($product['shortDescription']) ?></p>
+                </div>
+              </article>
+            </a>
+          </div>
+        <?php endforeach; ?>
+      </div>
     </div>
   </section>
 

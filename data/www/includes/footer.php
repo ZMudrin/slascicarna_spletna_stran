@@ -39,6 +39,7 @@ $emailHref = 'mailto:' . $siteConfig['email'];
           <p><a class="footer-link" href="<?= h($emailHref) ?>"><?= h($siteConfig['email']) ?></a></p>
           <p class="mb-0"><?= h($siteConfig['city']) ?>, <?= h($siteConfig['country']) ?></p>
         </address>
+        <p class="mt-3 mb-0"><a class="footer-link footer-link-muted" href="studio.php">SweetCraft Studio</a></p>
       </section>
     </div>
   </div>

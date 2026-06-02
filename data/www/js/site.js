@@ -1,218 +1,37 @@
-import {
-  featuredProducts,
-  navItems,
-  productCategories,
-  products,
-  siteConfig,
-} from "./data.js";
+function parseEmbeddedJson(id, fallback = []) {
+  const node = document.getElementById(id);
+  if (!node) return fallback;
 
-function renderHeader() {
-  const rawPage = document.body.dataset.page;
-  const page = rawPage === "izdelek" ? "ponudba" : rawPage;
-  const mount = document.querySelector("[data-site-header]");
-  if (!mount) return;
-
-  const navMarkup = navItems
-    .map((item) => {
-      const isActive = page === item.id;
-
-      return `
-        <li class="nav-item">
-          <a
-            class="nav-link${isActive ? " active" : ""}"
-            href="${item.href}"
-            ${isActive ? 'aria-current="page"' : ""}
-          >
-            ${item.label}
-          </a>
-        </li>
-      `;
-    })
-    .join("");
-
-  mount.innerHTML = `
-    <header class="site-header">
-      <nav class="navbar navbar-expand-md" aria-label="Glavna navigacija">
-        <div class="container">
-          <a class="navbar-brand brand" href="domov.php" aria-label="SweetCraft domov">
-            <span class="brand-mark">
-              <img class="brand-mark-img" src="slike/ikona-logo.png" alt="" aria-hidden="true">
-            </span>
-            <span class="brand-copy">
-              <strong>${siteConfig.name}</strong>
-              <small>${siteConfig.tagline}</small>
-            </span>
-          </a>
-
-          <button
-            class="navbar-toggler shadow-none border-0"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#siteNavbar"
-            aria-controls="siteNavbar"
-            aria-expanded="false"
-            aria-label="Preklopi navigacijo"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse justify-content-md-end" id="siteNavbar">
-            <ul class="navbar-nav ms-auto align-items-md-center gap-md-2">
-              ${navMarkup}
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </header>
-  `;
-}
-
-function renderFooter() {
-  const mount = document.querySelector("[data-site-footer]");
-  if (!mount) return;
-  const phoneHref = `tel:${siteConfig.phone.replace(/\s+/g, "")}`;
-  const emailHref = `mailto:${siteConfig.email}`;
-
-  const navMarkup = navItems
-    .map(
-      (item) => `
-        <li>
-          <a class="footer-link" href="${item.href}">${item.label}</a>
-        </li>
-      `,
-    )
-    .join("");
-
-  mount.innerHTML = `
-    <footer class="site-footer mt-auto">
-      <div class="container py-5">
-        <div class="row g-4">
-          <section class="col-lg-5">
-            <div class="brand footer-brand">
-              <span class="brand-mark">
-                <img class="brand-mark-img" src="slike/ikona-logo.png" alt="" aria-hidden="true">
-              </span>
-              <span class="brand-copy">
-                <strong>${siteConfig.name}</strong>
-                <small>${siteConfig.tagline}</small>
-              </span>
-            </div>
-            <p class="footer-copy mb-0">
-              Ročno izdelane sladice po meri za vse priložnosti. Vsaka sladica je ustvarjena z ljubeznijo.
-            </p>
-          </section>
-
-          <nav class="col-sm-6 col-lg-3" aria-label="Povezave v nogi">
-            <h2 class="footer-title">Navigacija</h2>
-            <ul class="footer-links list-unstyled mb-0">
-              ${navMarkup}
-            </ul>
-          </nav>
-
-          <section class="col-sm-6 col-lg-4">
-            <h2 class="footer-title">Kontakt</h2>
-            <address class="footer-contact mb-0">
-              <p><a class="footer-link" href="${phoneHref}">${siteConfig.phone}</a></p>
-              <p><a class="footer-link" href="${emailHref}">${siteConfig.email}</a></p>
-              <p class="mb-0">${siteConfig.city}, ${siteConfig.country}</p>
-            </address>
-          </section>
-        </div>
-      </div>
-      <div class="container footer-bottom">
-        <p class="mb-0">&copy; 2026 SweetCraft. Vse pravice pridržane.</p>
-      </div>
-    </footer>
-  `;
-}
-
-function createCategoryCard(category) {
-  return `
-    <div class="col">
-      <a
-        class="card-link d-block h-100"
-        href="ponudba.php?filter=${category.id}#${category.id}"
-        data-category-link
-        data-category-id="${category.id}"
-      >
-        <article class="card category-card h-100 border-0 overflow-hidden">
-          <div class="card-media category-card-media">
-            <img src="${category.image}" alt="${category.title}">
-          </div>
-          <div class="card-body p-4">
-            <h3 class="h4">${category.title}</h3>
-            <p class="mb-0">${category.description}</p>
-          </div>
-        </article>
-      </a>
-    </div>
-  `;
-}
-
-function createProductCard(product, showCategory = false) {
-  return `
-    <div class="col">
-      <a class="card-link d-block h-100" href="izdelek.php?id=${product.id}">
-        <article class="card product-card h-100 border-0 overflow-hidden">
-          <div class="card-media product-card-media">
-            <img src="${product.image}" alt="${product.name}">
-          </div>
-          <div class="card-body p-4">
-            ${
-              showCategory
-                ? `<p class="eyebrow">${product.categoryLabel}</p>`
-                : ""
-            }
-            <h3 class="h4">${product.name}</h3>
-            <p class="mb-0">${product.shortDescription}</p>
-          </div>
-        </article>
-      </a>
-    </div>
-  `;
-}
-
-function renderDomovCollections() {
-  const categoriesMount = document.querySelector("[data-home-categories]");
-  const featuredMount = document.querySelector("[data-home-featured]");
-
-  if (categoriesMount) {
-    categoriesMount.innerHTML = productCategories.map(createCategoryCard).join("");
-
-    categoriesMount.querySelectorAll("[data-category-link]").forEach((link) => {
-      link.addEventListener("click", () => {
-        const selectedCategory = link.dataset.categoryId;
-        if (selectedCategory) {
-          window.sessionStorage.setItem("sweetcraft-offer-filter", selectedCategory);
-        }
-      });
-    });
-  }
-
-  if (featuredMount) {
-    featuredMount.innerHTML = featuredProducts
-      .map((product) => createProductCard(product, true))
-      .join("");
+  try {
+    return JSON.parse(node.textContent || "[]");
+  } catch (error) {
+    return fallback;
   }
 }
 
-function renderPonudbaPage() {
-  const page = document.body.dataset.page;
-  if (page !== "ponudba") return;
+function setupPonudbaPage() {
+  if (document.body.dataset.page !== "ponudba") return;
 
   const buttons = Array.from(document.querySelectorAll("[data-filter]"));
-  const grid = document.querySelector("[data-product-grid]");
-  const empty = document.querySelector("[data-empty-state]");
-  if (!grid || !empty) return;
+  const cards = Array.from(document.querySelectorAll("[data-product-card]"));
+  const emptyState = document.querySelector("[data-empty-state]");
+
+  if (buttons.length === 0 || cards.length === 0 || !emptyState) {
+    return;
+  }
+
+  const availableFilters = new Set(buttons.map((button) => button.dataset.filter));
 
   const render = (filter) => {
-    const filtered =
-      filter === "vse"
-        ? products
-        : products.filter((product) => product.category === filter);
+    let visibleCount = 0;
 
-    grid.innerHTML = filtered.map((product) => createProductCard(product)).join("");
-    empty.hidden = filtered.length > 0;
+    cards.forEach((card) => {
+      const matches = filter === "vse" || card.dataset.category === filter;
+      card.hidden = !matches;
+      if (matches) visibleCount += 1;
+    });
+
+    emptyState.hidden = visibleCount > 0;
 
     buttons.forEach((button) => {
       const isActive = button.dataset.filter === filter;
@@ -229,111 +48,12 @@ function renderPonudbaPage() {
 
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
-      const nextFilter = button.dataset.filter;
-      window.sessionStorage.setItem("sweetcraft-offer-filter", nextFilter);
-      render(nextFilter);
+      render(button.dataset.filter || "vse");
     });
   });
 
-  const params = new URLSearchParams(window.location.search);
-  const requestedFilter = params.get("filter");
-  const hashFilter = window.location.hash.replace(/^#/, "");
-  const storedFilter = window.sessionStorage.getItem("sweetcraft-offer-filter");
-  const initialFilterCandidate = requestedFilter || hashFilter || storedFilter || "vse";
-  const initialFilter = buttons.some((button) => button.dataset.filter === initialFilterCandidate)
-    ? initialFilterCandidate
-    : "vse";
-
-  window.sessionStorage.removeItem("sweetcraft-offer-filter");
-
-  render(initialFilter);
-}
-
-function renderProductDetailPage() {
-  if (document.body.dataset.page !== "izdelek") return;
-
-  const root = document.querySelector("[data-product-detail]");
-  if (!root) return;
-
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id") || "1";
-  const product = products.find((item) => item.id === id);
-
-  if (!product) {
-    root.innerHTML = `
-      <section class="page-section">
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-lg-8 col-xl-6">
-              <div class="empty-panel">
-                <h1>Izdelek ni bil najden</h1>
-                <p>Izbrani izdelek ne obstaja več ali pa je povezava napačna.</p>
-                <a class="btn btn-primary" href="ponudba.php">Nazaj na ponudbo</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
-    return;
-  }
-
-  root.innerHTML = `
-    <section class="page-section">
-      <div class="container">
-        <nav aria-label="Drobtinice">
-          <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="domov.php">Domov</a></li>
-            <li class="breadcrumb-item"><a href="ponudba.php">Ponudba</a></li>
-            <li class="breadcrumb-item active" aria-current="page">${product.name}</li>
-          </ol>
-        </nav>
-
-        <article class="row g-4 g-xl-5 align-items-start">
-          <div class="col-lg-6">
-            <figure class="detail-media mb-0">
-              <img src="${product.image}" alt="${product.name}">
-            </figure>
-          </div>
-
-          <div class="col-lg-6">
-            <div class="detail-copy">
-              <div class="rating-row mb-3">
-                <span class="stars">★★★★★</span>
-                <span>(127 ocen)</span>
-              </div>
-              <h1>${product.name}</h1>
-              <p class="lead mb-4">${product.description}</p>
-
-              <section class="info-card mb-4">
-                <h2 class="h3 mb-3">Informacije</h2>
-                <dl class="row g-3 mb-0 info-list">
-                  <div class="col-sm-4">
-                    <dt>Okus</dt>
-                    <dd>${product.okus}</dd>
-                  </div>
-                  <div class="col-sm-4">
-                    <dt>Velikost</dt>
-                    <dd>${product.velikost}</dd>
-                  </div>
-                  <div class="col-sm-4">
-                    <dt>Priložnost</dt>
-                    <dd>${product.priloznost}</dd>
-                  </div>
-                </dl>
-              </section>
-
-              <a class="btn btn-primary w-100 mb-3" href="narocilo.php?product=${product.id}">Naroči ta izdelek</a>
-
-              <aside class="notice">
-                <p class="mb-0"><strong>Pomembno:</strong> Vse sladice so narejene po naročilu iz svežih sestavin. Prosimo, naročite vsaj <strong>3 dni vnaprej</strong> za najboljšo kakovost.</p>
-              </aside>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-  `;
+  const requestedFilter = new URLSearchParams(window.location.search).get("filter") || "vse";
+  render(availableFilters.has(requestedFilter) ? requestedFilter : "vse");
 }
 
 function setupKontaktForm() {
@@ -359,6 +79,7 @@ function setupKontaktForm() {
 function setupNarociloForm() {
   if (document.body.dataset.page !== "narocilo") return;
 
+  const products = parseEmbeddedJson("order-products-data");
   const form = document.querySelector("[data-order-form]");
   const modeField = form?.querySelector("[data-order-mode]");
   const productField = form?.querySelector("[data-order-product]");
@@ -382,7 +103,8 @@ function setupNarociloForm() {
     !selectionName ||
     !selectionFlavor ||
     !selectionSize ||
-    !selectionOccasion
+    !selectionOccasion ||
+    products.length === 0
   ) {
     return;
   }
@@ -406,8 +128,9 @@ function setupNarociloForm() {
     },
   };
 
+  const productById = new Map(products.map((product) => [String(product.id), product]));
   const params = new URLSearchParams(window.location.search);
-  const requestedProduct = products.find((product) => product.id === params.get("product"));
+  const requestedProduct = productById.get(params.get("product") || "");
   const initialModeValue = form.dataset.initialMode;
   const initialProductValue = form.dataset.initialProduct;
   const initialSizeValue = form.dataset.initialSize;
@@ -428,7 +151,7 @@ function setupNarociloForm() {
   };
 
   const getSizeOptions = (mode, filteredProducts, selectedProduct) => {
-    const productSizes = filteredProducts.map((product) => product.velikost);
+    const productSizes = filteredProducts.map((product) => product.size);
     const modeDefaults = {
       izdelek: ["Po dogovoru"],
       torta: [
@@ -442,28 +165,23 @@ function setupNarociloForm() {
     };
 
     return Array.from(
-      new Set([
-        selectedProduct?.velikost,
-        ...productSizes,
-        ...modeDefaults[mode],
-      ].filter(Boolean)),
+      new Set([selectedProduct?.size, ...productSizes, ...modeDefaults[mode]].filter(Boolean)),
     );
   };
 
   const populateProductOptions = (mode, preferredProductId) => {
     const filteredProducts = getProductsForMode(mode);
-    const optionsMarkup = filteredProducts
+
+    productField.innerHTML = filteredProducts
       .map((product) => {
         const suffix = mode === "izdelek" ? ` (${product.categoryLabel})` : "";
-        const selected = preferredProductId === product.id ? " selected" : "";
+        const selected = preferredProductId === String(product.id) ? " selected" : "";
         return `<option value="${product.id}"${selected}>${product.name}${suffix}</option>`;
       })
       .join("");
 
-    productField.innerHTML = optionsMarkup;
-
     if (!productField.value && filteredProducts.length > 0) {
-      productField.value = filteredProducts[0].id;
+      productField.value = String(filteredProducts[0].id);
     }
 
     return filteredProducts;
@@ -477,8 +195,8 @@ function setupNarociloForm() {
 
     if (preferredSize && sizeOptions.includes(preferredSize)) {
       sizeField.value = preferredSize;
-    } else if (selectedProduct?.velikost) {
-      sizeField.value = selectedProduct.velikost;
+    } else if (selectedProduct?.size) {
+      sizeField.value = selectedProduct.size;
     }
   };
 
@@ -491,24 +209,24 @@ function setupNarociloForm() {
     const mode = modeField.value;
     const filteredProducts = populateProductOptions(mode, preferredProductId);
     const selectedProduct =
-      filteredProducts.find((product) => product.id === productField.value) || null;
+      filteredProducts.find((product) => String(product.id) === productField.value) || null;
 
-    helperField.textContent = orderModeConfig[mode].helper;
+    helperField.textContent = orderModeConfig[mode]?.helper || orderModeConfig.izdelek.helper;
     populateSizeOptions(mode, filteredProducts, selectedProduct, preferredSize);
 
     if (selectedProduct) {
       selectionCard.hidden = false;
       selectionName.textContent = selectedProduct.name;
-      selectionFlavor.textContent = selectedProduct.okus;
-      selectionSize.textContent = selectedProduct.velikost;
-      selectionOccasion.textContent = selectedProduct.priloznost;
+      selectionFlavor.textContent = selectedProduct.flavor;
+      selectionSize.textContent = selectedProduct.size;
+      selectionOccasion.textContent = selectedProduct.occasion;
 
       if (preferredFlavor) {
         flavorField.value = preferredFlavor;
         lastAutoFlavor = preferredFlavor;
       } else if (!preserveFlavor || !flavorField.value || flavorField.value === lastAutoFlavor) {
-        flavorField.value = selectedProduct.okus;
-        lastAutoFlavor = selectedProduct.okus;
+        flavorField.value = selectedProduct.flavor;
+        lastAutoFlavor = selectedProduct.flavor;
       }
     } else {
       selectionCard.hidden = true;
@@ -522,6 +240,7 @@ function setupNarociloForm() {
     String(minimumPickupDate.getMonth() + 1).padStart(2, "0"),
     String(minimumPickupDate.getDate()).padStart(2, "0"),
   ].join("-");
+
   const pickupDateField = form.querySelector("#datumPrevzema");
   if (pickupDateField) {
     pickupDateField.min = minDate;
@@ -529,7 +248,7 @@ function setupNarociloForm() {
 
   modeField.value = initialModeValue || defaultMode;
   syncOrderState({
-    preferredProductId: initialProductValue || requestedProduct?.id || null,
+    preferredProductId: initialProductValue || String(requestedProduct?.id || ""),
     preferredSize: initialSizeValue || "",
     preferredFlavor: initialFlavorValue || "",
     preserveFlavor: false,
@@ -540,14 +259,13 @@ function setupNarociloForm() {
   });
 
   productField.addEventListener("change", () => {
-    syncOrderState({ preferredProductId: productField.value, preserveFlavor: false });
+    syncOrderState({
+      preferredProductId: productField.value,
+      preserveFlavor: false,
+    });
   });
 }
 
-renderHeader();
-renderFooter();
-renderDomovCollections();
-renderPonudbaPage();
-renderProductDetailPage();
+setupPonudbaPage();
 setupKontaktForm();
 setupNarociloForm();

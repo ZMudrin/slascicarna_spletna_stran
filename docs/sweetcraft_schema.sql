@@ -40,7 +40,9 @@ CREATE TABLE IF NOT EXISTS order_requests (
   customer_name VARCHAR(150) NOT NULL,
   customer_phone VARCHAR(30) NOT NULL,
   customer_email VARCHAR(150) NOT NULL,
+  status ENUM('novo', 'potrjeno', 'v izdelavi', 'pripravljeno', 'zakljuceno') NOT NULL DEFAULT 'novo',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_orders_product
     FOREIGN KEY (product_id) REFERENCES products(id)
     ON UPDATE CASCADE

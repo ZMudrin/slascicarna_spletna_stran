@@ -24,7 +24,7 @@ $navItems = [
     ['id' => 'narocilo', 'label' => 'Naročilo', 'href' => 'narocilo.php'],
 ];
 
-$assetVersion = '20260519';
+$assetVersion = '20260601';
 
 if (!function_exists('h')) {
     function h(null|string|int|float $value): string
